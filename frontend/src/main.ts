@@ -118,10 +118,19 @@ function toggleTodo(id: string): void {
   }
 }
 
-function deleteTodo(id: string): void {
-  state.todos = state.todos.filter((t) => t.id !== id);
-  saveTodos();
-  render();
+function deleteTodo(id: string, element?: HTMLLIElement): void {
+  if (element) {
+    element.classList.add("removing");
+    setTimeout(() => {
+      state.todos = state.todos.filter((t) => t.id !== id);
+      saveTodos();
+      render();
+    }, 500);
+  } else {
+    state.todos = state.todos.filter((t) => t.id !== id);
+    saveTodos();
+    render();
+  }
 }
 
 function getFilteredTodos(): Todo[] {
@@ -132,6 +141,33 @@ function getFilteredTodos(): Todo[] {
       return state.todos.filter((t) => t.completed);
     default:
       return state.todos;
+  }
+}
+
+function animateCounter(element: HTMLStrongElement, newValue: number): void {
+  const oldValue = parseInt(element.textContent || "0");
+  if (oldValue !== newValue) {
+    element.classList.remove("counter-animate");
+    void element.offsetWidth; // Force reflow
+    element.classList.add("counter-animate");
+    element.textContent = String(newValue);
+  }
+}
+
+function createParticles(): void {
+  const particleCount = 15;
+  const particles = ["✦", "✧", "★", "☆", "✵", "✶"];
+
+  for (let i = 0; i < particleCount; i++) {
+    const particle = document.createElement("div");
+    particle.className = "particle";
+    particle.textContent = particles[Math.floor(Math.random() * particles.length)];
+    particle.style.left = `${Math.random() * 100}%`;
+    particle.style.fontSize = `${Math.random() * 20 + 10}px`;
+    particle.style.color = `hsl(${Math.random() * 60 + 300}, 80%, 60%)`;
+    particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+    particle.style.animationDelay = `${Math.random() * 5}s`;
+    document.body.appendChild(particle);
   }
 }
 
@@ -149,15 +185,15 @@ function renderTaskItem(todo: Todo): HTMLLIElement {
   const span = document.createElement("span");
   span.textContent = todo.text;
   span.className = `flex-1 min-w-0 break-words text-lg font-medium ${
-    todo.completed ? "line-through text-muted/60" : "text-ink"
+    todo.completed ? "line-through text-muted/60 task-completed" : "text-ink"
   } transition-colors`;
 
   const deleteButton = document.createElement("button");
   deleteButton.textContent = "✕";
   deleteButton.className =
-    "flex-shrink-0 h-8 w-8 flex items-center justify-center rounded-full text-muted hover:text-danger hover:bg-danger/10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all opacity-60 group-hover:opacity-100 font-bold text-lg";
+    "flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-full text-muted hover:text-danger hover:bg-danger/10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-all opacity-60 group-hover:opacity-100 font-bold text-xl hover:scale-125 hover:rotate-90";
   deleteButton.setAttribute("aria-label", `删除任务"${todo.text}"`);
-  deleteButton.addEventListener("click", () => deleteTodo(todo.id));
+  deleteButton.addEventListener("click", () => deleteTodo(todo.id, li));
 
   li.appendChild(checkbox);
   li.appendChild(span);
@@ -195,9 +231,10 @@ function render(): void {
 
   const activeCount = state.todos.filter((t) => !t.completed).length;
   const completedCount = state.todos.filter((t) => t.completed).length;
-  countAll.textContent = String(state.todos.length);
-  countActive.textContent = String(activeCount);
-  countCompleted.textContent = String(completedCount);
+
+  animateCounter(countAll, state.todos.length);
+  animateCounter(countActive, activeCount);
+  animateCounter(countCompleted, completedCount);
 
   filterButtons.forEach((button) => {
     const isActive = button.dataset.filter === state.filter;
@@ -206,7 +243,11 @@ function render(): void {
     button.classList.toggle("border-primary", isActive);
     button.classList.toggle("shadow-lg", isActive);
     button.classList.toggle("shadow-primary/30", isActive);
+    button.classList.toggle("active", isActive);
   });
 }
+
+// Initialize particles on load
+createParticles();
 
 render();
