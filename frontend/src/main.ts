@@ -138,26 +138,26 @@ function getFilteredTodos(): Todo[] {
 function renderTaskItem(todo: Todo): HTMLLIElement {
   const li = document.createElement("li");
   li.className =
-    "flex items-center gap-3 rounded border border-line bg-bg px-4 py-3 group hover:border-primary/40 transition";
+    "group flex items-center gap-4 rounded-md px-4 py-3 hover:bg-surface-alt/60 transition-colors";
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
   checkbox.checked = todo.completed;
   checkbox.className =
-    "h-5 w-5 flex-shrink-0 cursor-pointer accent-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2";
+    "h-4 w-4 flex-shrink-0 cursor-pointer appearance-none rounded-sm border border-muted/50 bg-transparent checked:bg-primary checked:border-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-colors relative";
   checkbox.setAttribute("aria-label", `标记"${todo.text}"为${todo.completed ? "未完成" : "已完成"}`);
   checkbox.addEventListener("change", () => toggleTodo(todo.id));
 
   const span = document.createElement("span");
   span.textContent = todo.text;
-  span.className = `flex-1 min-w-0 break-words ${
-    todo.completed ? "line-through text-muted" : "text-ink"
-  }`;
+  span.className = `flex-1 min-w-0 break-words text-[15px] leading-relaxed ${
+    todo.completed ? "line-through text-muted/70" : "text-ink"
+  } transition-colors`;
 
   const deleteButton = document.createElement("button");
-  deleteButton.textContent = "删除";
+  deleteButton.textContent = "×";
   deleteButton.className =
-    "flex-shrink-0 rounded px-3 py-1 text-sm text-danger border border-transparent hover:border-danger hover:bg-danger/10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 active:scale-95 transition opacity-70 group-hover:opacity-100";
+    "flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-sm text-muted/60 hover:text-danger hover:bg-danger/10 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 transition-colors opacity-0 group-hover:opacity-100 text-lg font-light";
   deleteButton.setAttribute("aria-label", `删除任务"${todo.text}"`);
   deleteButton.addEventListener("click", () => deleteTodo(todo.id));
 
@@ -175,14 +175,14 @@ function render(): void {
   taskList.innerHTML = "";
   if (filtered.length === 0) {
     emptyState.classList.remove("hidden");
-    if (hasAnyTodos) {
-      emptyState.querySelector("p")!.textContent =
-        state.filter === "active" ? "没有进行中的任务" : "没有已完成的任务";
-      emptyState.querySelectorAll("p")[1]!.textContent =
-        state.filter === "active" ? "所有任务都已完成" : "完成一些任务后会在这里显示";
-    } else {
-      emptyState.querySelector("p")!.textContent = "暂无任务";
-      emptyState.querySelectorAll("p")[1]!.textContent = "在上方输入框添加第一项任务";
+    const emptyText = emptyState.querySelector("p");
+    if (emptyText) {
+      if (hasAnyTodos) {
+        emptyText.textContent =
+          state.filter === "active" ? "没有进行中的任务" : "没有已完成的任务";
+      } else {
+        emptyText.textContent = "暂无任务";
+      }
     }
   } else {
     emptyState.classList.add("hidden");
@@ -203,9 +203,9 @@ function render(): void {
 
   filterButtons.forEach((button) => {
     const isActive = button.dataset.filter === state.filter;
-    button.classList.toggle("bg-primary", isActive);
-    button.classList.toggle("text-primary-fg", isActive);
-    button.classList.toggle("border-primary", isActive);
+    button.classList.toggle("text-ink", isActive);
+    button.classList.toggle("bg-surface-alt", isActive);
+    button.classList.toggle("font-medium", isActive);
   });
 }
 
