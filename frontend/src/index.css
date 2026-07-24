@@ -1,54 +1,140 @@
 @import "tailwindcss";
 
-/* Tailwind v4 theme tokens. Override these variables per project to re-theme
-   semantic utilities such as bg-primary, text-ink, and border-line. */
+/* Anime/Cartoon style theme */
 @theme {
-  --color-bg:           #faf9f6;
+  --color-bg:           #fce7f3;
   --color-surface:      #ffffff;
-  --color-surface-alt:  #f3f1ec;
-  --color-ink:          #1c1c1c;
-  --color-muted:        #8b8680;
-  --color-line:         #e8e5de;
-  --color-primary:      #1c1c1c;
-  --color-primary-fg:   #faf9f6;
-  --color-accent:       #b8956a;
-  --color-success:      #6b8e6f;
-  --color-warning:      #c9a227;
-  --color-danger:       #a85454;
+  --color-surface-alt:  #fdf2f8;
+  --color-ink:          #4c1d95;
+  --color-muted:        #9333ea;
+  --color-line:         #f9a8d4;
+  --color-primary:      #ec4899;
+  --color-primary-fg:   #ffffff;
+  --color-accent:       #8b5cf6;
+  --color-success:      #10b981;
+  --color-warning:      #f59e0b;
+  --color-danger:       #ef4444;
 
-  --font-display: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-body:    'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Segoe UI', system-ui, sans-serif;
+  --font-body:    'Comic Sans MS', 'Chalkboard SE', 'Marker Felt', 'Segoe UI', system-ui, sans-serif;
   --font-mono:    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  --radius-sm: 2px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
+  --radius-sm: 12px;
+  --radius-md: 20px;
+  --radius-lg: 28px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg:          #141413;
-    --color-surface:     #1c1c1a;
-    --color-surface-alt: #242421;
-    --color-ink:         #ececea;
-    --color-muted:       #8b8680;
-    --color-line:        #2e2e2a;
-    --color-primary:     #ececea;
-    --color-accent:      #c9a882;
-  }
+/* Animated gradient background */
+body {
+  background: linear-gradient(135deg, #fce7f3 0%, #e9d5ff 50%, #dbeafe 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
 }
 
-/* Custom checkbox checkmark */
-input[type="checkbox"].appearance-none:checked::after {
-  content: "";
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating stars decoration */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* Bouncy animation for additions */
+@keyframes bounceIn {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.task-item {
+  animation: bounceIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Custom checkbox with anime style */
+input[type="checkbox"].anime-checkbox {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-primary);
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+input[type="checkbox"].anime-checkbox:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+}
+
+input[type="checkbox"].anime-checkbox:checked {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+  border-color: var(--color-accent);
+}
+
+input[type="checkbox"].anime-checkbox:checked::after {
+  content: "★";
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 4px;
-  height: 7px;
-  border: solid var(--color-primary-fg);
-  border-width: 0 1.5px 1.5px 0;
-  transform: translate(-50%, -55%) rotate(45deg);
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 14px;
+  animation: sparkle 1s ease-in-out infinite;
+}
+
+/* Sparkle decoration */
+.sparkle {
+  position: absolute;
+  color: var(--color-warning);
+  animation: sparkle 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.card-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(236, 72, 153, 0.2);
+}
+
+/* Button bounce effect */
+button {
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(135deg, #4c1d95 0%, #6b21a8 50%, #1e3a8a 100%);
+  }
+
+  :root {
+    --color-bg:          #2e1065;
+    --color-surface:     #4c1d95;
+    --color-surface-alt: #5b21b6;
+    --color-ink:         #fce7f3;
+    --color-muted:       #d8b4fe;
+    --color-line:        #7c3aed;
+    --color-primary:     #ec4899;
+    --color-accent:      #a78bfa;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
